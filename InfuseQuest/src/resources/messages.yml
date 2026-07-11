@@ -1,0 +1,13 @@
+prefix: "&8[&bInfuseQuest&8] "
+
+quest-complete:
+
+ "&aQuest completed!"
+
+upgrade-success:
+
+ "&aPower upgraded successfully!"
+
+no-permission:
+
+ "&cNo permission!"

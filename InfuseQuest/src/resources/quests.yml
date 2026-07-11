@@ -1,0 +1,48 @@
+daily:
+
+
+  zombie_hunter:
+
+
+    name: "&cZombie Hunter"
+
+
+    type: KILL_ENTITY
+
+
+    entity:
+
+      - ZOMBIE
+
+
+    amount: 25
+
+
+    reward:
+
+      essence: 2
+
+
+
+
+
+  miner:
+
+
+    name: "&6Master Miner"
+
+
+    type: BREAK_BLOCK
+
+
+    block:
+
+      - STONE
+
+
+    amount: 128
+
+
+    reward:
+
+      essence: 2
