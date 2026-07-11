@@ -1,0 +1,6 @@
+# InfuseQuest Configuration
+database:
+  type: sqlite
+
+quests:
+  enabled: true
