@@ -20,6 +20,8 @@ import com.infusequest.power.PowerManager;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.infusequest.quest.daily.DailyQuestManager;
+
 
 
 public class InfuseQuest extends JavaPlugin {
@@ -39,6 +41,9 @@ public class InfuseQuest extends JavaPlugin {
 
 
     private PowerManager powerManager;
+
+
+    private DailyQuestManager dailyQuestManager;
 
 
 
@@ -86,6 +91,11 @@ public class InfuseQuest extends JavaPlugin {
 
         powerManager =
                 new PowerManager(this);
+
+
+
+        dailyQuestManager = 
+                new DailyQuestManager();
 
 
 
@@ -315,6 +325,12 @@ public class InfuseQuest extends JavaPlugin {
         return powerManager;
 
 
+    }
+
+    public DailyQuestManager getDailyQuestManager() {
+
+        return dailyQuestManager;
+        
     }
 
 
