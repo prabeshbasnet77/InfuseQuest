@@ -1,58 +1,51 @@
 package com.infusequest.listener;
 
+import com.infusequest.InfuseQuest;
+import com.infusequest.quest.DailyQuestManager;
+import com.infusequest.quest.DailyQuestProgress;
+import com.infusequest.quest.Quest;
+import com.infusequest.quest.QuestType;
 
-import com.infusequest.quest.QuestManager;
-
-
-import org.bukkit.event.Listener;
-
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+public class BlockBreakListener implements Listener {
 
+    private final InfuseQuest plugin;
 
-public class BlockBreakListener
-implements Listener {
+    public BlockBreakListener(InfuseQuest plugin) {
+        this.plugin = plugin;
+    }
 
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
 
+        Player player = event.getPlayer();
 
-private QuestManager manager;
+        Material block = event.getBlock().getType();
 
+        DailyQuestManager manager = plugin.getDailyQuestManager();
+        DailyQuestProgress progress = plugin.getDailyQuestProgress();
 
+        for (Quest quest : manager.getPlayerQuests(player.getUniqueId())) {
 
-public BlockBreakListener(
-QuestManager manager
-){
+            if (quest.getType() != QuestType.BREAK_BLOCK) {
+                continue;
+            }
 
-this.manager=manager;
+            if (!quest.getTargetName().equalsIgnoreCase(block.name())) {
+                continue;
+            }
 
-}
-
-
-
-
-
-@EventHandler
-
-public void breakBlock(
-BlockBreakEvent event
-){
-
-
-manager.addProgress(
-
-event.getPlayer(),
-
-"miner",
-
-1
-
-);
-
-
-
-}
-
+            progress.addProgress(
+                    player.getUniqueId(),
+                    quest,
+                    1
+            );
+        }
+    }
 
 }

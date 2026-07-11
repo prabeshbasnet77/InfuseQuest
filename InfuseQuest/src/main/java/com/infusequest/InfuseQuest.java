@@ -21,6 +21,8 @@ import com.infusequest.power.PowerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.infusequest.quest.daily.DailyQuestManager;
+import com.infusequest.quest.daily.DailyQuestProgress;
+import com.infusequest.quest.QuestLoader;
 
 
 
@@ -42,8 +44,12 @@ public class InfuseQuest extends JavaPlugin {
 
     private PowerManager powerManager;
 
+    private QuestLoader questLoader;
+
 
     private DailyQuestManager dailyQuestManager;
+
+    private DailyQuestProgress dailyQuestProgress;
 
 
 
@@ -78,6 +84,9 @@ public class InfuseQuest extends JavaPlugin {
 
         database.connect();
 
+        questLoader = new QuestLoader(this);
+questLoader.load();
+
 
 
 
@@ -94,8 +103,11 @@ public class InfuseQuest extends JavaPlugin {
 
 
 
-        dailyQuestManager = 
-                new DailyQuestManager();
+        dailyQuestManager = new DailyQuestManager(this);
+
+
+
+        dailyQuestProgress = new DailyQuestProgress(this);
 
 
 
@@ -107,9 +119,7 @@ public class InfuseQuest extends JavaPlugin {
                 .getPluginManager()
                 .registerEvents(
 
-                        new EntityKillListener(
-                                questManager
-                        ),
+                        new EntityKillListener(this),
 
                         this
 
@@ -121,17 +131,13 @@ public class InfuseQuest extends JavaPlugin {
 
 
 
+        
         getServer()
-                .getPluginManager()
-                .registerEvents(
-
-                        new BlockBreakListener(
-                                questManager
-                        ),
-
-                        this
-
-                );
+        .getPluginManager()
+        .registerEvents(
+                        new BlockBreakListener(this),
+                this
+);
 
 
 
@@ -330,8 +336,16 @@ public class InfuseQuest extends JavaPlugin {
     public DailyQuestManager getDailyQuestManager() {
 
         return dailyQuestManager;
-        
+
     }
+
+    public DailyQuestProgress getDailyQuestProgress() {
+    return dailyQuestProgress;
+}
+
+public QuestLoader getQuestLoader() {
+    return questLoader;
+}
 
 
 

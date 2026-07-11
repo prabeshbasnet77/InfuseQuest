@@ -1,40 +1,61 @@
 package com.infusequest.quest.daily;
 
+import com.infusequest.InfuseQuest;
+import com.infusequest.database.DailyQuestRepository;
+import com.infusequest.quest.Quest;
+
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DailyQuestManager {
 
-    private final Map<UUID, List<PlayerDailyQuest>> playerQuests = new HashMap<>();
+    private final DailyQuestRepository repository;
+
+    public DailyQuestManager(InfuseQuest plugin) {
+        repository = new DailyQuestRepository(plugin);
+    }
 
     public List<PlayerDailyQuest> getQuests(Player player) {
 
-        UUID uuid = player.getUniqueId();
+        List<PlayerDailyQuest> quests =
+                repository.load(player.getUniqueId());
 
-        if (!playerQuests.containsKey(uuid)) {
-
-            generateQuests(player);
-
+        if (!quests.isEmpty()) {
+            return quests;
         }
 
-        return playerQuests.get(uuid);
+        quests = new ArrayList<>();
 
+        List<Quest> random =
+                DailyQuestPool.getRandomQuests(3);
+
+        for (Quest quest : random) {
+
+            PlayerDailyQuest dailyQuest =
+                    new PlayerDailyQuest(quest.getId());
+
+            repository.save(
+                    player.getUniqueId(),
+                    dailyQuest
+            );
+
+            quests.add(dailyQuest);
+        }
+
+        return quests;
     }
 
-    public void generateQuests(Player player) {
+    /**
+     * Save updated progress.
+     */
+    public void save(Player player, PlayerDailyQuest quest) {
 
-        UUID uuid = player.getUniqueId();
-
-        List<PlayerDailyQuest> list = new ArrayList<>();
-
-        DailyQuestPool.getRandomQuests(3).forEach(q ->
-
-                list.add(new PlayerDailyQuest(q.getId()))
-
+        repository.update(
+                player.getUniqueId(),
+                quest
         );
-
-        playerQuests.put(uuid, list);
 
     }
 

@@ -96,6 +96,14 @@ return reward;
 
 }
 
+public QuestType getType() {
+    return type;
+}
+
+public String getTargetName() {
+    return targetName;
+}
+
 
 
 }
