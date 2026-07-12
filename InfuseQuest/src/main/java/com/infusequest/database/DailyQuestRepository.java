@@ -18,9 +18,7 @@ public class DailyQuestRepository {
     private final InfuseQuest plugin;
 
 
-    public DailyQuestRepository(
-            InfuseQuest plugin
-    ){
+    public DailyQuestRepository(InfuseQuest plugin){
 
         this.plugin = plugin;
 
@@ -28,10 +26,7 @@ public class DailyQuestRepository {
 
 
 
-
-    public List<PlayerDailyQuest> load(
-            UUID uuid
-    ){
+    public List<PlayerDailyQuest> getPlayerQuests(UUID uuid){
 
 
         List<PlayerDailyQuest> quests =
@@ -45,13 +40,12 @@ public class DailyQuestRepository {
                     plugin.getDatabase()
                     .getConnection()
                     .prepareStatement(
-
                     """
-                    SELECT *
+                    SELECT quest_id, progress, completed
                     FROM daily_quests
                     WHERE uuid=?
+                    ORDER BY id ASC
                     """
-
                     );
 
 
@@ -71,11 +65,8 @@ public class DailyQuestRepository {
 
                 PlayerDailyQuest quest =
                         new PlayerDailyQuest(
-
-                        rs.getString("quest_id")
-
+                                rs.getString("quest_id")
                         );
-
 
 
                 quest.setProgress(
@@ -88,13 +79,13 @@ public class DailyQuestRepository {
                 );
 
 
-
                 quests.add(quest);
-
 
 
             }
 
+
+            ps.close();
 
 
         }catch(Exception e){
@@ -115,10 +106,12 @@ public class DailyQuestRepository {
 
 
 
+
     public void save(
             UUID uuid,
             PlayerDailyQuest quest
     ){
+
 
 
         try{
@@ -128,7 +121,6 @@ public class DailyQuestRepository {
                     plugin.getDatabase()
                     .getConnection()
                     .prepareStatement(
-
                     """
                     INSERT INTO daily_quests
                     (
@@ -140,9 +132,7 @@ public class DailyQuestRepository {
                     )
 
                     VALUES(?,?,?,?,?)
-
                     """
-
                     );
 
 
@@ -177,7 +167,11 @@ public class DailyQuestRepository {
             );
 
 
+
             ps.executeUpdate();
+
+
+            ps.close();
 
 
 
@@ -197,9 +191,9 @@ public class DailyQuestRepository {
 
 
 
-    public boolean needsReset(
-            UUID uuid
-    ){
+
+
+    public boolean needsReset(UUID uuid){
 
 
 
@@ -210,14 +204,12 @@ public class DailyQuestRepository {
                     plugin.getDatabase()
                     .getConnection()
                     .prepareStatement(
-
                     """
                     SELECT created
                     FROM daily_quests
                     WHERE uuid=?
                     LIMIT 1
                     """
-
                     );
 
 
@@ -241,19 +233,12 @@ public class DailyQuestRepository {
                         rs.getLong("created");
 
 
-
                 long now =
                         System.currentTimeMillis();
 
 
 
-                long difference =
-                        now-created;
-
-
-
-                return difference >=
-                        86400000L;
+                return now-created >= 86400000L;
 
 
             }
@@ -268,7 +253,7 @@ public class DailyQuestRepository {
 
 
 
-        return true;
+        return false;
 
 
     }
@@ -280,9 +265,7 @@ public class DailyQuestRepository {
 
 
 
-    public void reset(
-            UUID uuid
-    ){
+    public void reset(UUID uuid){
 
 
         try{
@@ -292,12 +275,10 @@ public class DailyQuestRepository {
                     plugin.getDatabase()
                     .getConnection()
                     .prepareStatement(
-
                     """
                     DELETE FROM daily_quests
                     WHERE uuid=?
                     """
-
                     );
 
 
@@ -310,6 +291,9 @@ public class DailyQuestRepository {
             ps.executeUpdate();
 
 
+            ps.close();
+
+
 
         }catch(Exception e){
 
@@ -318,8 +302,9 @@ public class DailyQuestRepository {
         }
 
 
-
     }
+
+
 
 
 
@@ -339,18 +324,14 @@ public class DailyQuestRepository {
                     plugin.getDatabase()
                     .getConnection()
                     .prepareStatement(
-
                     """
                     UPDATE daily_quests
-
                     SET progress=?,
                     completed=?
 
                     WHERE uuid=?
                     AND quest_id=?
-
                     """
-
                     );
 
 
@@ -379,8 +360,10 @@ public class DailyQuestRepository {
             );
 
 
-
             ps.executeUpdate();
+
+
+            ps.close();
 
 
 
@@ -392,7 +375,6 @@ public class DailyQuestRepository {
 
 
     }
-
 
 
 }
