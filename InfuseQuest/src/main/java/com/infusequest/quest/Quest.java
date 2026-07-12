@@ -1,73 +1,64 @@
 package com.infusequest.quest;
 
 
-
 public class Quest {
 
 
-
     private final String id;
-
-
     private final String name;
-
-
     private final QuestType type;
-
-
     private final String target;
-
-
     private final int amount;
-
-
     private final int essence;
-
-
     private final QuestDifficulty difficulty;
+
+
+
+
+    public Quest(
+            String id,
+            String name,
+            QuestType type,
+            String target,
+            int amount,
+            int essence,
+            QuestDifficulty difficulty
+    ){
+
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.target = target;
+        this.amount = amount;
+        this.essence = essence;
+        this.difficulty = difficulty;
+
+    }
 
 
 
 
 
     public Quest(
-
             String id,
-
             String name,
-
             QuestType type,
-
             String target,
-
             int amount,
-
-            int essence,
-
-            QuestDifficulty difficulty
-
+            int essence
     ){
 
-
-        this.id = id;
-
-        this.name = name;
-
-        this.type = type;
-
-        this.target = target;
-
-        this.amount = amount;
-
-        this.essence = essence;
-
-        this.difficulty = difficulty;
-
+        this(
+                id,
+                name,
+                type,
+                target,
+                amount,
+                essence,
+                QuestDifficulty.EASY
+        );
 
     }
-
-
-
 
 
 
@@ -80,17 +71,11 @@ public class Quest {
     }
 
 
-
-
-
     public String getName(){
 
         return name;
 
     }
-
-
-
 
 
     public QuestType getType(){
@@ -100,9 +85,6 @@ public class Quest {
     }
 
 
-
-
-
     public String getTarget(){
 
         return target;
@@ -110,7 +92,11 @@ public class Quest {
     }
 
 
+    public String getTargetName(){
 
+        return target;
+
+    }
 
 
     public int getAmount(){
@@ -120,7 +106,18 @@ public class Quest {
     }
 
 
+    public int getGoal(){
 
+        return amount;
+
+    }
+
+
+    public int getReward(){
+
+        return essence;
+
+    }
 
 
     public int getEssence(){
@@ -130,17 +127,11 @@ public class Quest {
     }
 
 
-
-
-
     public QuestDifficulty getDifficulty(){
 
         return difficulty;
 
     }
-
-
-
 
 
 }

@@ -11,7 +11,7 @@ import com.infusequest.quest.QuestLoader;
 
 
 import com.infusequest.quest.daily.DailyQuestManager;
-import com.infusequest.quest.daily.DailyQuestProgress;
+import com.infusequest.quest.DailyQuestProgress;
 
 
 

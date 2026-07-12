@@ -5,6 +5,7 @@ public class PlayerDailyQuest {
     private final String questId;
     private int progress;
     private boolean claimed;
+    private boolean completed;
 
     public PlayerDailyQuest(String questId) {
         this.questId = questId;
@@ -31,5 +32,16 @@ public class PlayerDailyQuest {
     public void setClaimed(boolean claimed) {
         this.claimed = claimed;
     }
+
+    public boolean isCompleted(){
+
+    return completed;
+
+}
+public void setCompleted(boolean completed){
+
+    this.completed = completed;
+
+}
 
 }

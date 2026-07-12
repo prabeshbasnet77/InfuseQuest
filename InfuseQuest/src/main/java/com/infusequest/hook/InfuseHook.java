@@ -1,13 +1,11 @@
 package com.infusequest.hook;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
 
 
 public class InfuseHook {
@@ -17,7 +15,7 @@ public class InfuseHook {
 
 
 
-    public InfuseHook(){
+    public InfuseHook() {
 
 
         infusePlugin =
@@ -31,8 +29,10 @@ public class InfuseHook {
 
 
 
-
-    public boolean isEnabled(){
+    /**
+     * Check if Infuse plugin exists and is enabled
+     */
+    public boolean isEnabled() {
 
 
         return infusePlugin != null
@@ -46,77 +46,87 @@ public class InfuseHook {
 
 
 
+    /**
+     * Debug hook connection
+     */
+    public void debugMethods() {
 
 
-
-    public boolean hasAbility(
-
-            Player player,
-
-            String ability
-
-    ){
+        Bukkit.getLogger()
+                .info("[InfuseQuest] InfuseHook Debug Loaded");
 
 
+        if(!isEnabled()) {
 
-        if(!isEnabled()){
 
-            return false;
+            Bukkit.getLogger()
+                    .warning(
+                            "[InfuseQuest] Infuse plugin not found!"
+                    );
+
+
+            return;
 
         }
 
 
 
-
-        try{
+        try {
 
 
             Class<?> dataManager =
-
                     Class.forName(
-                    "com.catadminer.infuseSMP.managers.DataManager"
+                            "com.catadminer.infuseSMP.managers.DataManager"
+                    );
+
+
+
+            Bukkit.getLogger()
+                    .info(
+                            "[InfuseQuest] Searching Infuse methods..."
                     );
 
 
 
 
-
-            /*
-            Search possible methods
-            */
+            for(Method method : dataManager.getMethods()) {
 
 
-            for(Method method :
-                    dataManager.getMethods()){
+                if(!Modifier.isPublic(method.getModifiers())) {
+
+                    continue;
+
+                }
+
 
 
                 String name =
                         method.getName()
-                        .toLowerCase();
-
+                                .toLowerCase();
 
 
 
 
                 if(
-                name.contains("effect")
-                ||
-                name.contains("ability")
-                ||
-                name.contains("power")
-                ){
+                        name.contains("effect")
+                        ||
+                        name.contains("ability")
+                        ||
+                        name.contains("power")
+                        ||
+                        name.contains("has")
+                        ||
+                        name.contains("get")
+                ) {
 
 
 
                     Bukkit.getLogger()
-                    .info(
-
-                    "[InfuseQuest] Testing method: "
-                    +
-                    method.getName()
-
-                    );
-
+                            .info(
+                                    "[InfuseQuest] Found method: "
+                                            +
+                                            method.getName()
+                            );
 
 
                 }
@@ -127,7 +137,112 @@ public class InfuseHook {
 
 
 
-        }catch(Exception e){
+
+        } catch (Exception e) {
+
+
+            Bukkit.getLogger()
+                    .warning(
+                            "[InfuseQuest] Failed loading Infuse DataManager"
+                    );
+
+
+            e.printStackTrace();
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+    /**
+     * Check player ability from Infuse
+     */
+    public boolean hasAbility(
+            Player player,
+            String ability
+    ) {
+
+
+
+        if(!isEnabled()) {
+
+
+            return false;
+
+
+        }
+
+
+
+
+
+        try {
+
+
+            Class<?> dataManager =
+                    Class.forName(
+                            "com.catadminer.infuseSMP.managers.DataManager"
+                    );
+
+
+
+
+
+            /*
+             Future reflection connection.
+             Currently only scans methods.
+             Actual method call depends on
+             Infuse plugin API.
+            */
+
+
+
+            for(Method method :
+                    dataManager.getMethods()) {
+
+
+
+                String methodName =
+                        method.getName()
+                                .toLowerCase();
+
+
+
+
+                if(
+                        methodName.contains("ability")
+                        ||
+                        methodName.contains("power")
+                        ||
+                        methodName.contains("effect")
+                ) {
+
+
+
+                    Bukkit.getLogger()
+                            .info(
+                                    "[InfuseQuest] Checking method: "
+                                            +
+                                            method.getName()
+                            );
+
+
+                }
+
+
+
+            }
+
+
+
+        } catch(Exception e) {
 
 
             e.printStackTrace();
@@ -142,6 +257,8 @@ public class InfuseHook {
 
 
     }
+
+
 
 
 

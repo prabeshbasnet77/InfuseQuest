@@ -1,42 +1,40 @@
 package com.infusequest.listener;
 
-
 import com.infusequest.InfuseQuest;
-
 import com.infusequest.gui.PowerGUI;
-
 import com.infusequest.power.PowerManager;
 import com.infusequest.power.PowerType;
-
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import org.bukkit.inventory.ItemStack;
 
 
-
 public class PowerGUIListener implements Listener {
-
 
 
     private final InfuseQuest plugin;
 
+    private final PowerManager powerManager;
+
 
 
     public PowerGUIListener(
-            InfuseQuest plugin
-    ){
+            InfuseQuest plugin,
+            PowerManager powerManager
+    ) {
+
 
         this.plugin = plugin;
+        this.powerManager = powerManager;
+
 
     }
-
 
 
 
@@ -46,30 +44,27 @@ public class PowerGUIListener implements Listener {
     @EventHandler
     public void onClick(
             InventoryClickEvent event
-    ){
+    ) {
 
 
 
-        if(!(event.getWhoClicked()
-                instanceof Player player)){
+        if(!(event.getWhoClicked() instanceof Player player)) {
 
             return;
 
         }
-
 
 
 
 
         if(!event.getView()
                 .getTitle()
-                .equals("§8✦ Infuse Powers")){
+                .equals("§8✦ Infuse Powers")) {
 
 
             return;
 
         }
-
 
 
 
@@ -87,7 +82,7 @@ public class PowerGUIListener implements Listener {
 
 
         if(item == null ||
-                !item.hasItemMeta()){
+                !item.hasItemMeta()) {
 
 
             return;
@@ -98,14 +93,10 @@ public class PowerGUIListener implements Listener {
 
 
 
-
-
         String name =
                 ChatColor.stripColor(
-
-                item.getItemMeta()
-                .getDisplayName()
-
+                        item.getItemMeta()
+                                .getDisplayName()
                 );
 
 
@@ -115,21 +106,19 @@ public class PowerGUIListener implements Listener {
         PowerType type;
 
 
-
-        try{
+        try {
 
 
             type =
-            PowerType.valueOf(
-                    name
-            );
+                    PowerType.valueOf(
+                            name
+                    );
 
 
-        }catch(Exception e){
+        } catch(Exception e) {
 
 
             return;
-
 
         }
 
@@ -138,20 +127,10 @@ public class PowerGUIListener implements Listener {
 
 
 
-        PowerManager manager =
-                plugin.getPowerManager();
-
-
-
-
-
         boolean success =
-                manager.upgrade(
-
+                powerManager.upgrade(
                         player,
-
                         type
-
                 );
 
 
@@ -159,21 +138,21 @@ public class PowerGUIListener implements Listener {
 
 
 
-
-        if(success){
-
+        if(success) {
 
 
             player.closeInventory();
 
 
 
-            PowerGUI.open(
+            PowerGUI gui =
+                    new PowerGUI(plugin);
 
+
+
+            gui.open(
                     player,
-
-                    manager
-
+                    powerManager
             );
 
 
@@ -182,7 +161,6 @@ public class PowerGUIListener implements Listener {
 
 
     }
-
 
 
 }

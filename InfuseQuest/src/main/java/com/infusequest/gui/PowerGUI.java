@@ -2,35 +2,26 @@ package com.infusequest.gui;
 
 
 import com.infusequest.InfuseQuest;
+import com.infusequest.power.PowerManager;
 import com.infusequest.power.PowerType;
 
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-
 import org.bukkit.entity.Player;
-
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
-
 public class PowerGUI {
-
 
 
     private final InfuseQuest plugin;
 
 
 
-
-    public PowerGUI(
-
-            InfuseQuest plugin
-
-    ){
+    public PowerGUI(InfuseQuest plugin){
 
         this.plugin = plugin;
 
@@ -39,27 +30,18 @@ public class PowerGUI {
 
 
 
-
-
-
-    public void open(Player player){
-
+    public void open(
+            Player player,
+            PowerManager manager
+    ){
 
 
         Inventory inv =
-
-        Bukkit.createInventory(
-
-                null,
-
-                54,
-
-                "§5Infuse Powers"
-
-        );
-
-
-
+                Bukkit.createInventory(
+                        null,
+                        54,
+                        "§8✦ Infuse Powers"
+                );
 
 
 
@@ -68,61 +50,24 @@ public class PowerGUI {
 
 
 
-
-
-        for(PowerType type :
-
-                PowerType.values()){
-
-
-
+        for(PowerType type : PowerType.values()){
 
 
             ItemStack item =
-
-            new ItemStack(
-
-            Material.NETHER_STAR
-
-            );
-
+                    new ItemStack(
+                            Material.NETHER_STAR
+                    );
 
 
 
             ItemMeta meta =
-
-            item.getItemMeta();
-
+                    item.getItemMeta();
 
 
 
             meta.setDisplayName(
-
-            "§d"
-            +
-            type.name()
-
+                    "§d" + type.name()
             );
-
-
-
-
-
-            meta.setLore(
-
-            java.util.List.of(
-
-            "§7Ability Status",
-
-            "§aOwned: Check Infuse",
-
-            "§eUpgrade With Essence"
-
-            )
-
-            );
-
-
 
 
 
@@ -130,26 +75,16 @@ public class PowerGUI {
 
 
 
-
-
             inv.setItem(
-
                     slot,
-
                     item
-
             );
 
 
             slot++;
 
 
-
-
-
         }
-
-
 
 
 
@@ -157,7 +92,6 @@ public class PowerGUI {
 
 
     }
-
 
 
 }

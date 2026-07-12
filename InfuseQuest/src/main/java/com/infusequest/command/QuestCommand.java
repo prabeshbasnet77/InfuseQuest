@@ -1,6 +1,7 @@
 package com.infusequest.command;
 
 
+import com.infusequest.InfuseQuest;
 import com.infusequest.gui.QuestGUI;
 
 
@@ -12,12 +13,16 @@ import org.bukkit.command.CommandSender;
 
 import org.bukkit.entity.Player;
 
+public class QuestCommand implements CommandExecutor {
+
+    private final InfuseQuest plugin;
 
 
-public class QuestCommand
-implements CommandExecutor {
+public QuestCommand(InfuseQuest plugin){
 
+    this.plugin = plugin;
 
+}
 
 @Override
 
@@ -36,20 +41,12 @@ String[] args
 
 
 if(sender instanceof Player player){
+            QuestGUI.open(player, plugin.getDailyQuestManager());
+            return true;
+}
 
-
-QuestGUI.open(player);
+    return false;
 
 
 }
-
-
-
-return true;
-
-
-}
-
-
-
 }

@@ -14,6 +14,8 @@ public enum QuestType {
 
     CRAFT,
 
+    BREED,
+
     WALK
 
 
