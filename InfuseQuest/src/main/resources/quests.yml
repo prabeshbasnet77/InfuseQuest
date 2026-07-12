@@ -1,0 +1,109 @@
+# InfuseQuest Configuration File
+# Daily quest definitions for the InfuseQuest plugin
+
+daily-quests:
+
+  # Zombie Hunter - Kill zombies for essence
+  zombie_hunter:
+    name: "&cZombie Hunter"
+    type: KILL_ENTITY
+    entity:
+      - ZOMBIE
+    amount: 25
+    reward:
+      essence: 2
+
+  # Master Miner - Break stone blocks
+  miner:
+    name: "&6Master Miner"
+    type: BREAK_BLOCK
+    block:
+      - STONE
+    amount: 128
+    reward:
+      essence: 2
+
+  # Skeleton Slayer - Kill skeletons
+  skeleton_slayer:
+    name: "&7Skeleton Slayer"
+    type: KILL_ENTITY
+    entity:
+      - SKELETON
+    amount: 20
+    reward:
+      essence: 2
+
+  # Wood Cutter - Break wooden logs
+  wood_cutter:
+    name: "&aWood Cutter"
+    type: BREAK_BLOCK
+    block:
+      - OAK_LOG
+      - BIRCH_LOG
+      - SPRUCE_LOG
+    amount: 64
+    reward:
+      essence: 2
+
+  # Spider Exterminator - Kill spiders
+  spider_exterminator:
+    name: "&4Spider Exterminator"
+    type: KILL_ENTITY
+    entity:
+      - SPIDER
+    amount: 15
+    reward:
+      essence: 2
+
+  # Dirt Digger - Break dirt blocks
+  dirt_digger:
+    name: "&8Dirt Digger"
+    type: BREAK_BLOCK
+    block:
+      - DIRT
+      - GRASS_BLOCK
+    amount: 256
+    reward:
+      essence: 2
+
+  # Creeper Containment - Kill creepers
+  creeper_containment:
+    name: "&2Creeper Containment"
+    type: KILL_ENTITY
+    entity:
+      - CREEPER
+    amount: 10
+    reward:
+      essence: 2
+
+  # Iron Harvester - Break iron ore
+  iron_harvester:
+    name: "&7Iron Harvester"
+    type: BREAK_BLOCK
+    block:
+      - IRON_ORE
+      - DEEPSLATE_IRON_ORE
+    amount: 32
+    reward:
+      essence: 3
+
+  # Gold Digger - Break gold ore
+  gold_digger:
+    name: "&6Gold Digger"
+    type: BREAK_BLOCK
+    block:
+      - GOLD_ORE
+      - DEEPSLATE_GOLD_ORE
+    amount: 16
+    reward:
+      essence: 3
+
+  # Enderman Exile - Kill endermen
+  enderman_exile:
+    name: "&5Enderman Exile"
+    type: KILL_ENTITY
+    entity:
+      - ENDERMAN
+    amount: 8
+    reward:
+      essence: 3

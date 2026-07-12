@@ -1,6 +1,111 @@
-# InfuseQuest Configuration
-database:
-  type: sqlite
+# InfuseQuest Plugin Configuration
+# This file contains all settings for the InfuseQuest plugin
 
-quests:
+# ============================================
+# Quest Reset Settings
+# ============================================
+quest-reset:
+  # Time when daily quests reset (24-hour format)
+  time: "00:00"
+  # Time zone for reset (use Java TimeZone ID)
+  timezone: "UTC"
+
+# ============================================
+# Daily Quest Settings
+# ============================================
+daily-quests:
+  # Number of quests given per player per day
+  max-quests: 3
+  # Reset quests at server restart
+  reset-on-restart: false
+  # Time to complete daily quests (in minutes, 0 = unlimited)
+  time-limit: 0
+
+# ============================================
+# Power/Ability Settings
+# ============================================
+max-power-level:
+  speed: 5
+  strength: 5
+  haste: 5
+  regeneration: 5
+  resistance: 5
+  fire-resistance: 5
+
+# ============================================
+# Power Upgrade Costs (in Essence)
+# ============================================
+upgrade-cost:
+  level-2: 5
+  level-3: 10
+  level-4: 20
+  level-5: 35
+
+# ============================================
+# Power Configuration
+# ============================================
+powers:
+  # Enable/disable power system
   enabled: true
+  # Time duration for power effects (in seconds)
+  duration: 300
+  # Cost to activate a power (in essence)
+  activation-cost: 1
+  # Cooldown between power activations (in seconds)
+  cooldown: 30
+
+# ============================================
+# Rewards and Essence Settings
+# ============================================
+rewards:
+  # Default essence reward per completed quest
+  default-essence: 1
+  # Bonus essence for completing all daily quests
+  daily-completion-bonus: 10
+  # Maximum essence a player can hold
+  max-essence: 999
+
+# ============================================
+# Database Settings
+# ============================================
+database:
+  # Database type (currently only SQLite supported)
+  type: sqlite
+  # Database file path (relative to plugin folder)
+  filepath: "plugins/InfuseQuest/data.db"
+  # Auto-save interval (in seconds)
+  auto-save-interval: 300
+
+# ============================================
+# Messages and Display Settings
+# ============================================
+messages:
+  enabled: true
+  # Prefix for plugin messages
+  prefix: "&f[&6InfuseQuest&f]"
+  # Show action bar messages
+  show-action-bar: true
+  # Show title messages
+  show-titles: true
+
+# ============================================
+# Infuse Integration Settings
+# ============================================
+infuse-integration:
+  # Enable Infuse plugin integration
+  enabled: true
+  # Required Infuse version
+  required-version: "2.4.3"
+  # Sync player abilities from Infuse
+  sync-abilities: true
+
+# ============================================
+# Debug Settings
+# ============================================
+debug:
+  # Enable debug mode (shows additional console messages)
+  enabled: false
+  # Log all quest updates
+  log-quest-updates: false
+  # Log all power activations
+  log-power-activations: false

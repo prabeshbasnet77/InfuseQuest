@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -19,6 +21,8 @@ public class DailyQuestManager {
 
 
     private final DailyQuestRepository repository;
+    
+    private final Map<java.util.UUID, List<PlayerDailyQuest>> playerQuests = new HashMap<>();
 
 
 
@@ -39,136 +43,111 @@ public class DailyQuestManager {
 
 
 
-
-
+    /**
+     * Get daily quests for a player.
+     * If the player needs a reset (new day), reset their quests.
+     * If they have no quests, generate new ones.
+     * 
+     * @param player The player to get quests for
+     * @return List of PlayerDailyQuest objects
+     */
     public List<PlayerDailyQuest> getQuests(
             Player player
     ){
 
+        java.util.UUID playerUUID = player.getUniqueId();
 
-
-        if(repository.needsReset(player.getUniqueId())){
-
-    repository.reset(player.getUniqueId());
-
-}
-
-
-
-
-
-
-        if(!quests.isEmpty()){
-
-
-            return quests;
-
-
+        if(repository.needsReset(playerUUID)){
+            repository.reset(playerUUID);
+            playerQuests.remove(playerUUID);
         }
 
+        // Check if player already has quests in memory
+        if(playerQuests.containsKey(playerUUID)){
+            List<PlayerDailyQuest> quests = playerQuests.get(playerUUID);
+            if(!quests.isEmpty()){
+                return quests;
+            }
+        }
 
-
-
-
-
-        quests =
-                new ArrayList<>();
-
-
-
-
-
+        // Generate new quests
+        List<PlayerDailyQuest> quests = new ArrayList<>();
 
         List<Quest> random =
                 DailyQuestPool.getRandomQuests(
                         DAILY_AMOUNT
                 );
 
-
-
-
-
-
-
         for(Quest quest : random){
-
-
 
             PlayerDailyQuest daily =
                     new PlayerDailyQuest(
                             quest.getId()
                     );
 
-
-
             repository.save(
-                    player.getUniqueId(),
+                    playerUUID,
                     daily
             );
 
-
-
             quests.add(daily);
-
-
 
         }
 
-
-
-
-
+        // Cache in memory
+        playerQuests.put(playerUUID, quests);
 
         return quests;
 
-
-
     }
 
 
 
 
-
+    /**
+     * Get a quest by its ID from the daily quest pool.
+     * 
+     * @param id The quest ID
+     * @return Quest object or null if not found
+     */
     public Quest getQuest(String id){
+        
+        for(Quest quest :
+                DailyQuestPool.getAll()){
 
-    for(Quest quest :
-            DailyQuestPool.getAll()){
+            if(quest.getId()
+                    .equalsIgnoreCase(id)){
 
+                return quest;
 
-        if(quest.getId()
-                .equalsIgnoreCase(id)){
-
-
-            return quest;
+            }
 
         }
 
+        return null;
 
     }
 
 
-    return null;
-
-}
-
-
-
+    /**
+     * Update progress for a specific daily quest.
+     * 
+     * @param player The player updating their quest
+     * @param questID The quest ID to update
+     * @param amount The amount to add to progress
+     */
     public void updateProgress(
             Player player,
             String questID,
             int amount
     ){
 
-
-
+        java.util.UUID playerUUID = player.getUniqueId();
+        
         List<PlayerDailyQuest> quests =
                 getQuests(player);
 
-
-
-
         for(PlayerDailyQuest quest : quests){
-
 
             if(
                     quest.getQuestId()
@@ -176,35 +155,30 @@ public class DailyQuestManager {
 
             ){
 
-
-
                 quest.setProgress(
                         quest.getProgress()
                         + amount
                 );
 
-
-
                 repository.update(
-                        player.getUniqueId(),
+                        playerUUID,
                         quest
                 );
 
-
-
             }
-
-
 
         }
 
-
-
-
     }
 
-
-
+    /**
+     * Clear player quests from cache when they disconnect.
+     * 
+     * @param player The player disconnecting
+     */
+    public void clearPlayerCache(Player player) {
+        playerQuests.remove(player.getUniqueId());
+    }
 
 
 }
