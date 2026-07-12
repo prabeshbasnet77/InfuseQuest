@@ -7,15 +7,11 @@ import com.infusequest.quest.daily.PlayerDailyQuest;
 
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
 import org.bukkit.Material;
-
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
 import org.bukkit.inventory.meta.ItemMeta;
 
 
@@ -34,16 +30,11 @@ public class QuestGUI {
     ){
 
 
-
         Inventory inv =
                 Bukkit.createInventory(
-
                         null,
-
                         45,
-
                         "§8✦ Daily Quests"
-
                 );
 
 
@@ -51,26 +42,26 @@ public class QuestGUI {
 
 
         /*
-        ===================
-        BORDER
-        ===================
-        */
+         * ===================
+         * BORDER
+         * ===================
+         */
 
 
         ItemStack border =
-                item(
-
-                Material.GRAY_STAINED_GLASS_PANE,
-
-                " "
-
+                createItem(
+                        Material.GRAY_STAINED_GLASS_PANE,
+                        " "
                 );
 
 
 
         for(int i = 0; i < 45; i++){
 
-            inv.setItem(i,border);
+            inv.setItem(
+                    i,
+                    border
+            );
 
         }
 
@@ -81,33 +72,26 @@ public class QuestGUI {
 
 
         /*
-        ===================
-        PLAYER BRAND
-        ===================
-        */
-
-
-        ItemStack info =
-                item(
-
-                Material.PLAYER_HEAD,
-
-                "§6PERRIN",
-
-                "§7Player: §f"
-                        + player.getName(),
-
-                "",
-
-                "§eDaily Quest System"
-
-                );
-
+         * ===================
+         * PLAYER INFO
+         * ===================
+         */
 
 
         inv.setItem(
                 4,
-                info
+
+                createItem(
+                        Material.PLAYER_HEAD,
+                        "§6PERRIN",
+
+                        "§7Player: §f" + player.getName(),
+
+                        "",
+
+                        "§eDaily Quest System"
+                )
+
         );
 
 
@@ -117,17 +101,16 @@ public class QuestGUI {
 
 
 
+
         /*
-        ===================
-        QUESTS
-        ===================
-        */
+         * ===================
+         * QUEST ITEMS
+         * ===================
+         */
 
 
         List<PlayerDailyQuest> quests =
                 manager.getQuests(player);
-
-
 
 
 
@@ -146,8 +129,11 @@ public class QuestGUI {
 
 
 
-            if(quest == null)
+            if(quest == null){
+
                 continue;
+
+            }
 
 
 
@@ -176,7 +162,7 @@ public class QuestGUI {
 
 
             lore.add(
-                    "§7Difficulty: "
+                    "§7Difficulty: §f"
                     +
                     quest.getDifficulty()
             );
@@ -194,16 +180,15 @@ public class QuestGUI {
 
 
             lore.add(
-                    createBar(
-                    pq.getProgress(),
-                    quest.getAmount()
+                    createProgressBar(
+                            pq.getProgress(),
+                            quest.getAmount()
                     )
             );
 
 
 
             lore.add(
-
                     "§f"
                     +
                     pq.getProgress()
@@ -211,7 +196,6 @@ public class QuestGUI {
                     "/"
                     +
                     quest.getAmount()
-
             );
 
 
@@ -221,15 +205,12 @@ public class QuestGUI {
 
 
             lore.add(
-                    "§aReward: "
-                    +
-                    "§e✦ "
+                    "§aReward: §e✦ "
                     +
                     quest.getEssence()
                     +
                     " Essence"
             );
-
 
 
 
@@ -250,22 +231,21 @@ public class QuestGUI {
 
 
 
-
             inv.setItem(
 
                     slot,
 
-                    item(
+                    createItem(
 
-                    material,
+                            material,
 
-                    "§b"
-                    +
-                    quest.getName(),
+                            "§b"
+                            +
+                            quest.getName(),
 
-                    lore.toArray(
-                    new String[0]
-                    )
+                            lore.toArray(
+                                    new String[0]
+                            )
 
                     )
 
@@ -273,12 +253,17 @@ public class QuestGUI {
 
 
 
+
+
             slot++;
 
 
 
-            if(slot==17)
-                slot=19;
+            if(slot == 17){
+
+                slot = 19;
+
+            }
 
 
 
@@ -291,22 +276,25 @@ public class QuestGUI {
 
 
 
+
         /*
-        FOOTER BRAND
-        */
+         * ===================
+         * FOOTER
+         * ===================
+         */
 
 
         inv.setItem(
 
                 40,
 
-                item(
+                createItem(
 
-                Material.NETHER_STAR,
+                        Material.NETHER_STAR,
 
-                "§dPERRIN",
+                        "§dPERRIN",
 
-                "§7InfuseQuest"
+                        "§7InfuseQuest"
 
                 )
 
@@ -317,7 +305,10 @@ public class QuestGUI {
 
 
 
+
         player.openInventory(inv);
+
+
 
 
 
@@ -341,7 +332,7 @@ public class QuestGUI {
 
 
 
-    private static String createBar(
+    private static String createProgressBar(
 
             int current,
 
@@ -350,16 +341,26 @@ public class QuestGUI {
     ){
 
 
+
+        if(max <= 0){
+
+            max = 1;
+
+        }
+
+
+
         int bars = 10;
 
 
-        double percent =
+
+        double percentage =
                 (double) current / max;
 
 
 
         int filled =
-                (int)(percent * bars);
+                (int)(percentage * bars);
 
 
 
@@ -370,16 +371,18 @@ public class QuestGUI {
 
 
 
-        for(int i=0;i<bars;i++){
+        for(int i = 0; i < bars; i++){
 
 
-            if(i < filled)
+            if(i < filled){
 
                 bar.append("§a█");
 
-            else
+            }else{
 
                 bar.append("§7░");
+
+            }
 
 
         }
@@ -387,8 +390,6 @@ public class QuestGUI {
 
 
         return bar.toString();
-
-
 
     }
 
@@ -400,7 +401,7 @@ public class QuestGUI {
 
 
 
-    private static ItemStack item(
+    private static ItemStack createItem(
 
             Material material,
 
@@ -422,17 +423,21 @@ public class QuestGUI {
 
 
 
-        meta.setDisplayName(name);
+        if(meta != null){
 
 
-
-        meta.setLore(
-                List.of(lore)
-        );
+            meta.setDisplayName(name);
 
 
+            meta.setLore(
+                    List.of(lore)
+            );
 
-        item.setItemMeta(meta);
+
+            item.setItemMeta(meta);
+
+
+        }
 
 
 

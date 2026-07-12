@@ -325,14 +325,14 @@ public class InfuseQuest extends JavaPlugin {
 
 
         getServer()
-        .getPluginManager()
-        .registerEvents(
+.getPluginManager()
+.registerEvents(
 
-                new GUIListener(this),
+        new GUIListener(),
 
-                this
+        this
 
-        );
+);
 
 
 

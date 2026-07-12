@@ -1,18 +1,13 @@
 package com.infusequest.gui;
 
 
-import com.infusequest.InfuseQuest;
+import org.bukkit.entity.Player;
 
-import com.infusequest.power.PowerManager;
-import com.infusequest.power.PowerType;
-
-
-import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 
 
@@ -20,16 +15,26 @@ public class GUIListener implements Listener {
 
 
 
-    private final InfuseQuest plugin;
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event){
 
 
+        if(!(event.getWhoClicked() instanceof Player)){
+            return;
+        }
 
 
-    public GUIListener(
-            InfuseQuest plugin
-    ){
+        String title = event.getView().getTitle();
 
-        this.plugin = plugin;
+
+        if(title.equals("§8✦ Daily Quests")
+                ||
+           title.equals("§8✦ Infuse Powers")){
+
+
+            event.setCancelled(true);
+
+        }
 
     }
 
@@ -37,89 +42,21 @@ public class GUIListener implements Listener {
 
 
 
-
     @EventHandler
-
-    public void click(
-            InventoryClickEvent event
-    ){
+    public void onInventoryDrag(InventoryDragEvent event){
 
 
-
-        if(!(event.getWhoClicked()
-                instanceof Player player))
-            return;
+        String title = event.getView().getTitle();
 
 
-
-
-
-        String title =
-                event.getView()
-                .getTitle();
-
-
-
-
-
-        /*
-         Cancel all GUI clicks
-        */
-
-        if(title.equals("§8Daily Quests")
-        ||
-        title.equals("§8Infuse Powers")){
+        if(title.equals("§8✦ Daily Quests")
+                ||
+           title.equals("§8✦ Infuse Powers")){
 
 
             event.setCancelled(true);
 
-
         }
-
-
-
-
-
-        /*
-          POWER UPGRADE MENU
-
-          Speed button slot = 11
-
-        */
-
-
-        if(title.equals("§8Infuse Powers")){
-
-
-
-            if(event.getSlot() == 11){
-
-
-
-                plugin.getPowerManager()
-                        .upgrade(
-
-                                player,
-
-                                PowerType.SPEED
-
-                        );
-
-
-
-                player.closeInventory();
-
-
-
-            }
-
-
-
-        }
-
-
-
-
 
     }
 
