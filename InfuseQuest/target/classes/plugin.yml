@@ -29,9 +29,23 @@ commands:
     description: Admin commands
 
 
+  powers:
+
+    description: Open Infuse Power Menu
+
+
 permissions:
 
 
   infusequest.admin:
 
     default: op
+
+
+softdepend:
+  - InfuseSMP
+
+
+commands:
+  infusedebug:
+    description: Debug Infuse API

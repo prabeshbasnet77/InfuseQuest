@@ -2,11 +2,10 @@ package com.infusequest.power;
 
 
 import com.infusequest.InfuseQuest;
+import com.infusequest.database.PowerRepository;
+
 
 import org.bukkit.entity.Player;
-
-
-import java.sql.PreparedStatement;
 
 
 
@@ -14,157 +13,402 @@ public class PowerManager {
 
 
 
-private InfuseQuest plugin;
+    private final InfuseQuest plugin;
 
 
+    private final PowerRepository repository;
 
-public PowerManager(
-InfuseQuest plugin
-){
 
-this.plugin=plugin;
 
-}
+    private final int MAX_LEVEL = 5;
 
 
 
 
-public boolean upgrade(
 
-Player player,
 
-PowerType power
+    public PowerManager(
 
-){
+            InfuseQuest plugin
 
+    ){
 
 
-try{
+        this.plugin = plugin;
 
 
-PreparedStatement ps =
-plugin.getDatabase()
-.getConnection()
-.prepareStatement(
+        this.repository =
+                new PowerRepository(plugin);
 
-"""
 
-SELECT essence FROM players
+    }
 
-WHERE uuid=?
 
-"""
 
-);
 
 
 
-ps.setString(
 
-1,
 
-player.getUniqueId()
-.toString()
 
-);
+    public PlayerPower getPower(
 
+            Player player,
 
+            PowerType type
 
-var result =
-ps.executeQuery();
+    ){
 
 
 
-if(result.next()){
+        return repository.getPower(
 
+                player.getUniqueId(),
 
-int essence =
-result.getInt("essence");
+                type
 
+        );
 
 
-if(essence < 5){
+    }
 
-player.sendMessage(
-"§cNot enough Essence!"
-);
 
-return false;
 
-}
 
 
 
 
-PreparedStatement remove =
-plugin.getDatabase()
-.getConnection()
-.prepareStatement(
 
-"""
 
-UPDATE players
+    public boolean upgrade(
 
-SET essence = essence - 5
 
-WHERE uuid=?
+            Player player,
 
-"""
 
-);
+            PowerType type
 
 
+    ){
 
-remove.setString(
 
-1,
 
-player.getUniqueId()
-.toString()
 
-);
 
+        PlayerPower power =
 
+                repository.getPower(
 
-remove.executeUpdate();
+                        player.getUniqueId(),
 
+                        type
 
+                );
 
 
 
-InfuseHook.upgrade(
 
-player,
 
-power,
 
-2
 
-);
 
 
+        /*
+        Check ownership
+        */
 
-return true;
 
+        if(!power.isOwned()){
 
 
-}
 
+            player.sendMessage(
 
+                    "§cYou do not own "
+                    + type.name()
+                    + " ability!"
 
-}catch(Exception e){
+            );
 
-e.printStackTrace();
 
-}
 
+            return false;
 
 
-return false;
+        }
 
 
 
-}
+
+
+
+
+
+
+        /*
+        Maximum level check
+        */
+
+
+        if(power.getLevel()
+                >= MAX_LEVEL){
+
+
+
+            player.sendMessage(
+
+                    "§c"
+                    + type.name()
+                    + " is already MAX level!"
+
+            );
+
+
+
+            return false;
+
+
+        }
+
+
+
+
+
+
+
+
+
+        /*
+        Upgrade cost
+
+        Level 1 -> 2 = 10
+        Level 2 -> 3 = 20
+        Level 3 -> 4 = 30
+        Level 4 -> 5 = 40
+
+        */
+
+
+        int cost =
+
+                power.getLevel()
+                * 10;
+
+
+
+
+
+
+
+
+
+        /*
+        Check essence
+        */
+
+
+        int essence =
+
+                plugin
+                .getDatabase()
+                .getEssence(
+
+                        player.getUniqueId()
+
+                );
+
+
+
+
+
+
+
+        if(essence < cost){
+
+
+
+            player.sendMessage(
+
+                    "§cYou need §e"
+                    + cost
+                    + " Essence §cto upgrade!"
+
+            );
+
+
+
+            return false;
+
+
+        }
+
+
+
+
+
+
+
+
+
+        /*
+        Remove essence
+        */
+
+
+        plugin
+        .getDatabase()
+        .removeEssence(
+
+                player.getUniqueId(),
+
+                cost
+
+        );
+
+
+
+
+
+
+
+
+
+        /*
+        Increase level
+        */
+
+
+        power.setLevel(
+
+                power.getLevel()+1
+
+        );
+
+
+
+
+
+
+
+
+
+        /*
+        Save power
+        */
+
+
+        repository.save(
+
+                player.getUniqueId(),
+
+                power
+
+        );
+
+
+
+
+
+
+
+
+
+        player.sendMessage(
+
+                "§a✦ "
+                + type.name()
+                + " upgraded to Level §e"
+                + power.getLevel()
+
+        );
+
+
+
+        player.sendMessage(
+
+                "§7Cost: §c-"
+                + cost
+                + " Essence"
+
+        );
+
+
+
+
+
+
+
+        return true;
+
+
+
+    }
+
+
+
+
+
+
+
+
+    public int getUpgradeCost(
+
+            Player player,
+
+            PowerType type
+
+    ){
+
+
+
+        PlayerPower power =
+
+                getPower(
+
+                        player,
+
+                        type
+
+                );
+
+
+
+        return power.getLevel()*10;
+
+
+    }
+
+
+
+
+
+
+
+
+    public boolean hasPower(
+
+            Player player,
+
+            PowerType type
+
+    ){
+
+
+
+        return getPower(
+
+                player,
+
+                type
+
+        ).isOwned();
+
+
+    }
+
+
+
+
 
 
 }

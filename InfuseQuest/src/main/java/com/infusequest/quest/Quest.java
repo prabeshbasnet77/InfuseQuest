@@ -1,108 +1,145 @@
 package com.infusequest.quest;
 
 
+
 public class Quest {
 
 
-private String id;
 
-private String name;
-
-private QuestType type;
-
-private String target;
-
-private int amount;
-
-private int reward;
+    private final String id;
 
 
+    private final String name;
 
 
-public Quest(
-
-String id,
-
-String name,
-
-QuestType type,
-
-String target,
-
-int amount,
-
-int reward
-
-){
+    private final QuestType type;
 
 
-this.id=id;
-
-this.name=name;
-
-this.type=type;
-
-this.target=target;
-
-this.amount=amount;
-
-this.reward=reward;
+    private final String target;
 
 
-}
+    private final int amount;
+
+
+    private final int essence;
+
+
+    private final QuestDifficulty difficulty;
 
 
 
 
 
-public String getId(){
+    public Quest(
 
-return id;
+            String id,
 
-}
+            String name,
 
+            QuestType type,
 
-public String getName(){
+            String target,
 
-return name;
+            int amount,
 
-}
+            int essence,
 
+            QuestDifficulty difficulty
 
-public QuestType getType(){
-
-return type;
-
-}
+    ){
 
 
-public String getTarget(){
+        this.id = id;
 
-return target;
+        this.name = name;
 
-}
+        this.type = type;
+
+        this.target = target;
+
+        this.amount = amount;
+
+        this.essence = essence;
+
+        this.difficulty = difficulty;
 
 
-public int getAmount(){
-
-return amount;
-
-}
+    }
 
 
-public int getReward(){
 
-return reward;
 
-}
 
-public QuestType getType() {
-    return type;
-}
 
-public String getTargetName() {
-    return targetName;
-}
+
+
+    public String getId(){
+
+        return id;
+
+    }
+
+
+
+
+
+    public String getName(){
+
+        return name;
+
+    }
+
+
+
+
+
+    public QuestType getType(){
+
+        return type;
+
+    }
+
+
+
+
+
+    public String getTarget(){
+
+        return target;
+
+    }
+
+
+
+
+
+    public int getAmount(){
+
+        return amount;
+
+    }
+
+
+
+
+
+    public int getEssence(){
+
+        return essence;
+
+    }
+
+
+
+
+
+    public QuestDifficulty getDifficulty(){
+
+        return difficulty;
+
+    }
+
+
 
 
 

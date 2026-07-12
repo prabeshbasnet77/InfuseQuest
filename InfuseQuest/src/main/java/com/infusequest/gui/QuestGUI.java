@@ -1,6 +1,10 @@
 package com.infusequest.gui;
 
 
+import com.infusequest.quest.Quest;
+import com.infusequest.quest.daily.DailyQuestManager;
+import com.infusequest.quest.daily.PlayerDailyQuest;
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,10 +15,12 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import org.bukkit.inventory.meta.ItemMeta;
 
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -23,74 +29,304 @@ public class QuestGUI {
 
 
     public static void open(
-            Player player
+            Player player,
+            DailyQuestManager manager
     ){
+
 
 
         Inventory inv =
                 Bukkit.createInventory(
+
                         null,
-                        27,
-                        "§8Daily Quests"
+
+                        45,
+
+                        "§8✦ Daily Quests"
+
                 );
 
 
 
-        ItemStack zombie =
-                createItem(
-                        Material.ROTTEN_FLESH,
-                        "§cZombie Hunter",
-                        "§7Kill 25 Zombies",
-                        "§bReward: §f2 Essence"
+
+
+        /*
+        ===================
+        BORDER
+        ===================
+        */
+
+
+        ItemStack border =
+                item(
+
+                Material.GRAY_STAINED_GLASS_PANE,
+
+                " "
+
                 );
 
 
 
-        ItemStack miner =
-                createItem(
-                        Material.DIAMOND_PICKAXE,
-                        "§6Master Miner",
-                        "§7Mine 128 Blocks",
-                        "§bReward: §f2 Essence"
+        for(int i = 0; i < 45; i++){
+
+            inv.setItem(i,border);
+
+        }
+
+
+
+
+
+
+
+        /*
+        ===================
+        PLAYER BRAND
+        ===================
+        */
+
+
+        ItemStack info =
+                item(
+
+                Material.PLAYER_HEAD,
+
+                "§6PERRIN",
+
+                "§7Player: §f"
+                        + player.getName(),
+
+                "",
+
+                "§eDaily Quest System"
+
                 );
-
-
-
-        ItemStack close =
-                createItem(
-                        Material.BARRIER,
-                        "§cClose",
-                        "§7Click to close"
-                );
-
 
 
 
         inv.setItem(
-                11,
-                zombie
+                4,
+                info
         );
+
+
+
+
+
+
+
+
+        /*
+        ===================
+        QUESTS
+        ===================
+        */
+
+
+        List<PlayerDailyQuest> quests =
+                manager.getQuests(player);
+
+
+
+
+
+        int slot = 10;
+
+
+
+        for(PlayerDailyQuest pq : quests){
+
+
+
+            Quest quest =
+                    manager.getQuest(
+                            pq.getQuestId()
+                    );
+
+
+
+            if(quest == null)
+                continue;
+
+
+
+
+
+            Material material =
+                    pq.isCompleted()
+
+                    ?
+
+                    Material.LIME_STAINED_GLASS
+
+                    :
+
+                    Material.BOOK;
+
+
+
+
+
+
+
+            List<String> lore =
+                    new ArrayList<>();
+
+
+
+            lore.add(
+                    "§7Difficulty: "
+                    +
+                    quest.getDifficulty()
+            );
+
+
+
+            lore.add("");
+
+
+
+            lore.add(
+                    "§7Progress:"
+            );
+
+
+
+            lore.add(
+                    createBar(
+                    pq.getProgress(),
+                    quest.getAmount()
+                    )
+            );
+
+
+
+            lore.add(
+
+                    "§f"
+                    +
+                    pq.getProgress()
+                    +
+                    "/"
+                    +
+                    quest.getAmount()
+
+            );
+
+
+
+            lore.add("");
+
+
+
+            lore.add(
+                    "§aReward: "
+                    +
+                    "§e✦ "
+                    +
+                    quest.getEssence()
+                    +
+                    " Essence"
+            );
+
+
+
+
+
+            if(pq.isCompleted()){
+
+
+                lore.add("");
+
+                lore.add(
+                        "§a✔ Completed"
+                );
+
+
+            }
+
+
+
+
+
+
+            inv.setItem(
+
+                    slot,
+
+                    item(
+
+                    material,
+
+                    "§b"
+                    +
+                    quest.getName(),
+
+                    lore.toArray(
+                    new String[0]
+                    )
+
+                    )
+
+            );
+
+
+
+            slot++;
+
+
+
+            if(slot==17)
+                slot=19;
+
+
+
+        }
+
+
+
+
+
+
+
+
+        /*
+        FOOTER BRAND
+        */
 
 
         inv.setItem(
-                15,
-                miner
+
+                40,
+
+                item(
+
+                Material.NETHER_STAR,
+
+                "§dPERRIN",
+
+                "§7InfuseQuest"
+
+                )
+
         );
 
 
-        inv.setItem(
-                22,
-                close
-        );
+
 
 
 
         player.openInventory(inv);
 
 
+
         GUIManager.open(
+
                 player,
+
                 "QUEST"
+
         );
 
 
@@ -102,11 +338,78 @@ public class QuestGUI {
 
 
 
-    private static ItemStack createItem(
-            Material material,
-            String name,
-            String... lore
+
+
+
+    private static String createBar(
+
+            int current,
+
+            int max
+
     ){
+
+
+        int bars = 10;
+
+
+        double percent =
+                (double) current / max;
+
+
+
+        int filled =
+                (int)(percent * bars);
+
+
+
+
+        StringBuilder bar =
+                new StringBuilder();
+
+
+
+
+        for(int i=0;i<bars;i++){
+
+
+            if(i < filled)
+
+                bar.append("§a█");
+
+            else
+
+                bar.append("§7░");
+
+
+        }
+
+
+
+        return bar.toString();
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    private static ItemStack item(
+
+            Material material,
+
+            String name,
+
+            String... lore
+
+    ){
+
 
 
         ItemStack item =
@@ -119,14 +422,12 @@ public class QuestGUI {
 
 
 
-        meta.setDisplayName(
-                name
-        );
+        meta.setDisplayName(name);
 
 
 
         meta.setLore(
-                Arrays.asList(lore)
+                List.of(lore)
         );
 
 
@@ -139,6 +440,7 @@ public class QuestGUI {
 
 
     }
+
 
 
 }

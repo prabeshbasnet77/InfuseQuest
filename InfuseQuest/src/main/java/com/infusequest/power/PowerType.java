@@ -4,29 +4,31 @@ package com.infusequest.power;
 public enum PowerType {
 
 
-    SPEED,
-
-    STRENGTH,
-
-    HASTE,
-
-    HEART,
-
-    REGEN,
-
     FIRE,
 
     FROST,
 
-    FEATHER,
+    SPEED,
 
-    ENDER,
+    STRENGTH,
+
+    HEART,
+
+    HASTE,
+
+    REGEN,
+
+    THUNDER,
 
     OCEAN,
 
-    INVIS,
+    ENDER,
 
-    THUNDER
+    EMERALD,
+
+    FEATHER,
+
+    INVISIBILITY
 
 
 }

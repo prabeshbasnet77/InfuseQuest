@@ -1,21 +1,19 @@
 package com.infusequest.gui;
 
 
+import com.infusequest.InfuseQuest;
+import com.infusequest.power.PowerType;
+
 
 import org.bukkit.Bukkit;
-
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.Inventory;
-
 import org.bukkit.inventory.ItemStack;
-
 import org.bukkit.inventory.meta.ItemMeta;
-
-
-import java.util.Arrays;
 
 
 
@@ -23,126 +21,143 @@ public class PowerGUI {
 
 
 
-    public static void open(
-            Player player
+    private final InfuseQuest plugin;
+
+
+
+
+    public PowerGUI(
+
+            InfuseQuest plugin
+
     ){
+
+        this.plugin = plugin;
+
+    }
+
+
+
+
+
+
+
+    public void open(Player player){
 
 
 
         Inventory inv =
-                Bukkit.createInventory(
-                        null,
-                        27,
-                        "§8Infuse Powers"
-                );
 
+        Bukkit.createInventory(
 
+                null,
 
-        ItemStack speed =
-                create(
-                        Material.SUGAR,
-                        "§b⚡ Speed",
-                        "§7Current Level: §f1",
-                        "",
-                        "§eUpgrade Cost:",
-                        "§f5 Essence"
-                );
+                54,
 
+                "§5Infuse Powers"
 
-
-        ItemStack strength =
-                create(
-                        Material.IRON_SWORD,
-                        "§c⚔ Strength",
-                        "§7Current Level: §f1",
-                        "",
-                        "§eUpgrade Cost:",
-                        "§f5 Essence"
-                );
-
-
-
-        ItemStack heart =
-                create(
-                        Material.REDSTONE,
-                        "§c❤ Heart",
-                        "§7Current Level: §f1"
-                );
-
-
-
-
-        inv.setItem(
-                11,
-                speed
         );
 
 
-        inv.setItem(
-                13,
-                strength
-        );
 
 
-        inv.setItem(
-                15,
-                heart
-        );
+
+
+
+        int slot = 10;
+
+
+
+
+
+        for(PowerType type :
+
+                PowerType.values()){
+
+
+
+
+
+            ItemStack item =
+
+            new ItemStack(
+
+            Material.NETHER_STAR
+
+            );
+
+
+
+
+            ItemMeta meta =
+
+            item.getItemMeta();
+
+
+
+
+            meta.setDisplayName(
+
+            "§d"
+            +
+            type.name()
+
+            );
+
+
+
+
+
+            meta.setLore(
+
+            java.util.List.of(
+
+            "§7Ability Status",
+
+            "§aOwned: Check Infuse",
+
+            "§eUpgrade With Essence"
+
+            )
+
+            );
+
+
+
+
+
+            item.setItemMeta(meta);
+
+
+
+
+
+            inv.setItem(
+
+                    slot,
+
+                    item
+
+            );
+
+
+            slot++;
+
+
+
+
+
+        }
+
+
 
 
 
         player.openInventory(inv);
 
 
-
-        GUIManager.open(
-                player,
-                "POWER"
-        );
-
-
     }
 
-
-
-
-
-
-
-    private static ItemStack create(
-            Material mat,
-            String name,
-            String... lore
-    ){
-
-
-        ItemStack item =
-                new ItemStack(mat);
-
-
-
-        ItemMeta meta =
-                item.getItemMeta();
-
-
-
-        meta.setDisplayName(name);
-
-
-
-        meta.setLore(
-                Arrays.asList(lore)
-        );
-
-
-        item.setItemMeta(meta);
-
-
-
-        return item;
-
-
-    }
 
 
 }

@@ -2,27 +2,49 @@ package com.infusequest;
 
 
 import com.infusequest.database.Database;
+
 import com.infusequest.config.ConfigManager;
 
+
 import com.infusequest.quest.QuestManager;
+import com.infusequest.quest.QuestLoader;
+
+
+import com.infusequest.quest.daily.DailyQuestManager;
+import com.infusequest.quest.daily.DailyQuestProgress;
+
+
 
 import com.infusequest.listener.EntityKillListener;
 import com.infusequest.listener.BlockBreakListener;
 import com.infusequest.listener.PlayerJoinListener;
+import com.infusequest.listener.PowerActivationListener;
+
+
 
 import com.infusequest.gui.GUIListener;
 
+
+
 import com.infusequest.command.QuestCommand;
 import com.infusequest.command.PowerCommand;
+import com.infusequest.command.InfuseDebugCommand;
+
+
 
 import com.infusequest.power.PowerManager;
+import com.infusequest.power.PowerActivationManager;
+import com.infusequest.power.AbilitySyncManager;
+
+
+
+import com.infusequest.hook.InfuseHook;
+
 
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.infusequest.quest.daily.DailyQuestManager;
-import com.infusequest.quest.daily.DailyQuestProgress;
-import com.infusequest.quest.QuestLoader;
+
 
 
 
@@ -30,7 +52,10 @@ public class InfuseQuest extends JavaPlugin {
 
 
 
+
+
     private static InfuseQuest instance;
+
 
 
     private Database database;
@@ -44,18 +69,39 @@ public class InfuseQuest extends JavaPlugin {
 
     private PowerManager powerManager;
 
+
+
     private QuestLoader questLoader;
 
 
+
     private DailyQuestManager dailyQuestManager;
+
 
     private DailyQuestProgress dailyQuestProgress;
 
 
 
 
+    private PowerActivationManager activationManager;
+
+
+    private AbilitySyncManager abilitySyncManager;
+
+
+
+    private InfuseHook infuseHook;
+
+
+
+
+
+
+
+
 
     @Override
+
     public void onEnable(){
 
 
@@ -70,60 +116,121 @@ public class InfuseQuest extends JavaPlugin {
 
 
 
+
+
+
+
         configManager =
+
                 new ConfigManager(this);
 
 
 
 
 
+
+
         database =
+
                 new Database(this);
 
 
 
         database.connect();
 
-        questLoader = new QuestLoader(this);
-questLoader.load();
+
+
+
+
+
+
+
+        /*
+        Infuse Hook
+        */
+
+
+        infuseHook =
+
+                new InfuseHook();
+
+
+
+
+
+        if(
+        getServer()
+        .getPluginManager()
+        .getPlugin("Infuse")
+        != null
+        ){
+
+
+            getLogger().info(
+                    "Infuse 2.4.3 Found!"
+            );
+
+
+        }else{
+
+
+            getLogger().warning(
+                    "Infuse not found!"
+            );
+
+
+        }
+
+
+
+
+
+
+
+
+
+        questLoader =
+
+                new QuestLoader(this);
+
+
+
+        questLoader.load();
+
+
+
+
 
 
 
 
 
         questManager =
+
                 new QuestManager(this);
 
 
 
 
 
+
+
+
+
         powerManager =
+
                 new PowerManager(this);
 
 
 
-        dailyQuestManager = new DailyQuestManager(this);
-
-
-
-        dailyQuestProgress = new DailyQuestProgress(this);
 
 
 
 
 
+        activationManager =
 
-
-        getServer()
-                .getPluginManager()
-                .registerEvents(
-
-                        new EntityKillListener(this),
-
-                        this
-
-                );
+                new PowerActivationManager(this);
 
 
 
@@ -131,13 +238,85 @@ questLoader.load();
 
 
 
-        
+
+        abilitySyncManager =
+
+                new AbilitySyncManager(this);
+
+
+
+
+
+
+
+
+
+        dailyQuestManager =
+
+                new DailyQuestManager(this);
+
+
+
+
+
+
+        dailyQuestProgress =
+
+                new DailyQuestProgress(this);
+
+
+
+
+
+
+
+
+
+        /*
+        LISTENERS
+        */
+
+
+
         getServer()
         .getPluginManager()
         .registerEvents(
-                        new BlockBreakListener(this),
+
+                new EntityKillListener(this),
+
                 this
-);
+
+        );
+
+
+
+
+
+
+        getServer()
+        .getPluginManager()
+        .registerEvents(
+
+                new BlockBreakListener(this),
+
+                this
+
+        );
+
+
+
+
+
+
+        getServer()
+        .getPluginManager()
+        .registerEvents(
+
+                new PlayerJoinListener(this),
+
+                this
+
+        );
 
 
 
@@ -146,16 +325,14 @@ questLoader.load();
 
 
         getServer()
-                .getPluginManager()
-                .registerEvents(
+        .getPluginManager()
+        .registerEvents(
 
-                        new PlayerJoinListener(
-                                this
-                        ),
+                new GUIListener(this),
 
-                        this
+                this
 
-                );
+        );
 
 
 
@@ -164,36 +341,91 @@ questLoader.load();
 
 
         getServer()
-                .getPluginManager()
-                .registerEvents(
+        .getPluginManager()
+        .registerEvents(
 
-                        new GUIListener(
-                                this
-                        ),
+                new PowerActivationListener(
 
-                        this
+                        activationManager,
 
-                );
+                        abilitySyncManager
 
+                ),
 
+                this
 
-
-
-
-
-        getCommand("quests")
-                .setExecutor(
-                        new QuestCommand()
-                );
+        );
 
 
 
 
 
-        getCommand("infusepower")
-                .setExecutor(
-                        new PowerCommand()
-                );
+
+
+
+
+        /*
+        COMMANDS
+        */
+
+
+
+        if(getCommand("quests") != null){
+
+
+            getCommand("quests")
+                    .setExecutor(
+
+                            new QuestCommand(this)
+
+                    );
+
+
+        }
+
+
+
+
+
+
+
+
+        if(getCommand("infusepower") != null){
+
+
+            getCommand("infusepower")
+                    .setExecutor(
+
+                            new PowerCommand(this)
+
+                    );
+
+
+        }
+
+
+
+
+
+
+
+
+        if(getCommand("infusedebug") != null){
+
+
+            getCommand("infusedebug")
+                    .setExecutor(
+
+                            new InfuseDebugCommand(
+                                    infuseHook
+                            )
+
+                    );
+
+
+        }
+
+
 
 
 
@@ -212,12 +444,18 @@ questLoader.load();
 
 
         getLogger().info(
-                " Hooked with InfuseSMP "
+                " Infuse Hook Loaded "
         );
 
 
         getLogger().info(
-                "=================================");
+                " Daily Quest System Loaded "
+        );
+
+
+        getLogger().info(
+                "================================="
+        );
 
 
 
@@ -232,6 +470,7 @@ questLoader.load();
 
 
     @Override
+
     public void onDisable(){
 
 
@@ -333,19 +572,87 @@ questLoader.load();
 
     }
 
-    public DailyQuestManager getDailyQuestManager() {
 
-        return dailyQuestManager;
+
+
+
+
+
+
+
+    public PowerActivationManager getActivationManager(){
+
+
+        return activationManager;
+
 
     }
 
-    public DailyQuestProgress getDailyQuestProgress() {
-    return dailyQuestProgress;
-}
 
-public QuestLoader getQuestLoader() {
-    return questLoader;
-}
+
+
+
+
+
+
+
+    public DailyQuestManager getDailyQuestManager(){
+
+
+        return dailyQuestManager;
+
+
+    }
+
+
+
+
+
+
+
+
+
+    public DailyQuestProgress getDailyQuestProgress(){
+
+
+        return dailyQuestProgress;
+
+
+    }
+
+
+
+
+
+
+
+
+
+    public QuestLoader getQuestLoader(){
+
+
+        return questLoader;
+
+
+    }
+
+
+
+
+
+
+
+
+
+    public InfuseHook getInfuseHook(){
+
+
+        return infuseHook;
+
+
+    }
+
+
 
 
 
