@@ -1,51 +1,40 @@
 name: InfuseQuest
-
 version: 1.0
-
 main: com.infusequest.InfuseQuest
-
 api-version: '1.21'
 
-
 depend:
-
   - Infuse
-
-
-commands:
-
-  quests:
-
-    description: Open daily quests
-
-
-  infusepower:
-
-    description: Open power upgrade menu
-
-
-  iq:
-
-    description: Admin commands
-
-
-  powers:
-
-    description: Open Infuse Power Menu
-
-
-permissions:
-
-
-  infusequest.admin:
-
-    default: op
-
 
 softdepend:
   - InfuseSMP
 
 
 commands:
+
+  quests:
+    description: Open daily quests
+    usage: /quests
+
+  infusepower:
+    description: Open power upgrade menu
+    usage: /infusepower
+
+  powers:
+    description: Open Infuse Power Menu
+    usage: /powers
+
+  iq:
+    description: Admin commands
+    usage: /iq
+
   infusedebug:
     description: Debug Infuse API
+    usage: /infusedebug
+
+
+permissions:
+
+  infusequest.admin:
+    description: Admin permission
+    default: op

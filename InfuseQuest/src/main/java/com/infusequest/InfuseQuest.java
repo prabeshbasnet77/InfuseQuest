@@ -372,17 +372,12 @@ public class InfuseQuest extends JavaPlugin {
 
         if(getCommand("quests") != null){
 
+    getCommand("quests")
+            .setExecutor(
+                    new QuestCommand(this)
+            );
 
-            getCommand("quests")
-                    .setExecutor(
-
-                            new QuestCommand(this)
-
-                    );
-
-
-        }
-
+}
 
 
 
